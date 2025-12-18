@@ -1,50 +1,96 @@
-# Welcome to your Expo app 👋
+# 💰 myFinance
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> A modern, personal finance tracking application built with **React Native**, **Expo**, and **Clean Architecture**.
 
-## Get started
+![Expo SDK](https://img.shields.io/badge/Expo%20SDK-52-black?logo=expo&style=for-the-badge)
+![React Native](https://img.shields.io/badge/React_Native-0.76-blue?logo=react&style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=for-the-badge)
+![NativeWind](https://img.shields.io/badge/NativeWind-v4-cyan?logo=tailwindcss&style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-1. Install dependencies
+## 📱 Overview
 
-   ```bash
-   npm install
-   ```
+**myFinance** is designed to help you take control of your financial life. With a local-first approach, it offers lightning-fast performance, offline capabilities, and a beautiful user interface to track your income and expenses effortlessly.
 
-2. Start the app
+Built with a strict **Clean Architecture**, this project serves as a robust example of scalable React Native development.
 
-   ```bash
-   npx expo start
-   ```
+## ✨ Features
 
-In the output, you'll find options to open the app in a
+- **💸 Transaction Tracking**: Easily add income and expenses with categories.
+- **📊 Visual Analytics**: Beautiful charts and graphs to understand your spending habits (powered by `react-native-gifted-charts`).
+- **🚀 Local-First**: All data is stored locally using **SQLite** and **Drizzle ORM** for instant access and privacy.
+- **🎨 Modern UI**: Sleek and responsive design utilizing **NativeWind** (Tailwind CSS) and **Lucide Icons**.
+- **🏗️ Clean Architecture**: Clear separation of concerns into Domain, Data, and Presentation layers.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 📸 Screenshots
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+| Home Dashboard | Add Transaction | Analytics |
+|:---:|:---:|:---:|
+| <img src="./assets/images/adaptive-icon.png" width="200" alt="Home Screen" /> | <img src="./assets/images/adaptive-icon.png" width="200" alt="Add Transaction" /> | <img src="./assets/images/adaptive-icon.png" width="200" alt="Analytics" /> |
 
-## Get a fresh project
+*(Note: Replace the placeholder images above with actual screenshots of your app)*
 
-When you're ready, run:
+## 🛠 Tech Stack
 
-```bash
-npm run reset-project
+- **Framework**: [Expo](https://expo.dev/) (SDK 52) & [React Native](https://reactnative.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [NativeWind](https://www.nativewind.dev/) (Tailwind CSS)
+- **Database**: [SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/)
+- **Icons**: [Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native)
+
+## 📂 Project Structure
+
+This project follows the **Clean Architecture** principles:
+
+```
+myFinance/
+├── app/                 # Expo Router (Navigation & screens)
+├── src/
+│   ├── core/            # Domain Layer (Entities & Use Cases)
+│   ├── data/            # Data Layer (Repositories & Datalources)
+│   └── presentation/    # UI Layer (Components & State Management)
+├── assets/              # Images and Fonts
+└── drizzle/             # Database Migrations
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🚀 Getting Started
 
-## Learn more
+### Prerequisites
 
-To learn more about developing your project with Expo, look at the following resources:
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### Installation
 
-## Join the community
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/your-username/myfinance.git
+    cd myfinance
+    ```
 
-Join our community of developers creating universal apps.
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3.  **Run the application**
+    ```bash
+    npm run android   # For Android
+    npm run ios       # For iOS
+    ```
+
+## 📜 Scripts
+
+| Script | Description |
+| :--- | :--- |
+| `npm start` | Start the Expo development server |
+| `npm run android` | Run on Android emulator/device |
+| `npm run ios` | Run on iOS simulator/device |
+| `npm run reset-project` | Reset the project state (clears cache, etc.) |
+| `npm run lint` | Run ESLint to check for code quality |
+
+---
+
+Made with ❤️ by [Your Name]
