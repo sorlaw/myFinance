@@ -26,9 +26,7 @@ Built with a strict **Clean Architecture**, this project serves as a robust exam
 
 | Home Dashboard | Add Transaction | Analytics |
 |:---:|:---:|:---:|
-| <img src="./assets/images/adaptive-icon.png" width="200" alt="Home Screen" /> | <img src="./assets/images/adaptive-icon.png" width="200" alt="Add Transaction" /> | <img src="./assets/images/adaptive-icon.png" width="200" alt="Analytics" /> |
-
-*(Note: Replace the placeholder images above with actual screenshots of your app)*
+| <img src="./assets/images/home.jpg" width="200" alt="Home Screen" /> | <img src="./assets/images/add-transaction.jpg" width="200" alt="Add Transaction" /> | <img src="./assets/images/analytics.jpg" width="200" alt="Analytics" /> |
 
 ## 🛠 Tech Stack
 
@@ -93,4 +91,4 @@ myFinance/
 
 ---
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by Putra Jangjaya
