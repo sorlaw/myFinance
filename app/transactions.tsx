@@ -64,7 +64,7 @@ export default function TransactionsScreen() {
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 renderItem={({ item, index }) => (
-                    <Animated.View entering={FadeInDown.delay(index * 50).springify()}>
+                    <Animated.View entering={FadeInDown.delay(index * 50).springify()} className="mb-3">
                         <TransactionCard
                             transaction={item}
                             onPress={() => router.push(`/edit/${item.id}`)}

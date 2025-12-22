@@ -1,4 +1,3 @@
-import { useTheme } from '@/context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
@@ -8,6 +7,7 @@ import Animated, {
     useDerivedValue,
     withSpring
 } from 'react-native-reanimated';
+import { useTheme } from '../context/ThemeContext';
 
 export function ThemeToggle() {
     const { toggleTheme, isDark } = useTheme();

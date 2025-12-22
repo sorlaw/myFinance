@@ -79,7 +79,17 @@ export default function MonthlyReportScreen() {
     // 3. Category Pie Data
     const categoryMap: Record<string, number> = {};
     data.filter(t => t.type === 'expense').forEach(t => {
-        categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
+        let category = t.category.trim(); // Trim whitespace
+        // Normalize case: Capitalize first letter, rest lowercase (optional, but good for consistency)
+        if (category.length > 0) {
+            category = category.charAt(0).toUpperCase() + category.slice(1);
+        }
+
+        // Bug fix: Merge 'Bensin' into 'Transportasi'
+        if (category.toLowerCase() === 'bensin') {
+            category = 'Transportasi';
+        }
+        categoryMap[category] = (categoryMap[category] || 0) + t.amount;
     });
 
     const pieData = Object.keys(categoryMap).map((cat, index) => {

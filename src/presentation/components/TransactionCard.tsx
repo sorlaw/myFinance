@@ -1,8 +1,8 @@
-import { useCurrency } from '@/context/CurrencyContext';
-import { Transaction } from '@/db/schema';
 import { getCategoryIcon } from '@/utils/categoryIcons';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { Transaction } from '../../../data/datasources/local/schema';
+import { useCurrency } from '../context/CurrencyContext';
 
 interface TransactionCardProps {
     transaction: Transaction;
