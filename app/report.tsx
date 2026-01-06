@@ -57,14 +57,22 @@ export default function MonthlyReportScreen() {
 
     // --- Data Processing ---
 
+    // Filter transactions to match the currently selected month
+    // This prevents stale data from previous months from being displayed while the new data is fetching
+    const currentMonthTransactions = data.filter(t => {
+        const tDate = new Date(t.date);
+        return tDate.getMonth() === currentDate.getMonth() &&
+            tDate.getFullYear() === currentDate.getFullYear();
+    });
+
     // 1. Summary Stats
-    const income = data.filter(t => t.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
-    const expense = data.filter(t => t.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
+    const income = currentMonthTransactions.filter(t => t.type === 'income').reduce((acc, curr) => acc + curr.amount, 0);
+    const expense = currentMonthTransactions.filter(t => t.type === 'expense').reduce((acc, curr) => acc + curr.amount, 0);
     const net = income - expense;
 
     // 2. Daily Expense Data for Bar Chart
     const dailyExpenses = new Array(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()).fill(0);
-    data.filter(t => t.type === 'expense').forEach(t => {
+    currentMonthTransactions.filter(t => t.type === 'expense').forEach(t => {
         const day = t.date.getDate() - 1; // 0-indexed
         dailyExpenses[day] += t.amount;
     });
@@ -78,7 +86,7 @@ export default function MonthlyReportScreen() {
 
     // 3. Category Pie Data
     const categoryMap: Record<string, number> = {};
-    data.filter(t => t.type === 'expense').forEach(t => {
+    currentMonthTransactions.filter(t => t.type === 'expense').forEach(t => {
         let category = t.category.trim(); // Trim whitespace
         // Normalize case: Capitalize first letter, rest lowercase (optional, but good for consistency)
         if (category.length > 0) {
