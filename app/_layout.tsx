@@ -80,6 +80,9 @@ const LayoutContent = () => {
   );
 };
 
+import { CleanupService } from '@/src/core/services/CleanupService';
+import { TransactionRepositoryImpl } from '@/src/data/repositories/TransactionRepositoryImpl';
+
 export default function RootLayout() {
   useEffect(() => {
     // Basic migration for MVP - create table if not exists
@@ -96,6 +99,14 @@ export default function RootLayout() {
     `;
     // Use execSync for synchronous execution on mount to ensure DB is ready
     expoDb.execSync(query);
+
+    // Trigger background data cleanup
+    const cleanup = async () => {
+      const repo = new TransactionRepositoryImpl();
+      const service = new CleanupService(repo);
+      await service.clearPreviousYearsData();
+    };
+    cleanup();
   }, []);
 
   return (

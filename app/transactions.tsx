@@ -2,7 +2,7 @@ import { TransactionCard } from '@/src/presentation/components/TransactionCard';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, Text, TextInput, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,7 +10,16 @@ import { useTheme } from '@/src/presentation/context/ThemeContext';
 import { useTransactionsViewModel } from '@/src/presentation/viewmodels/useTransactionsViewModel';
 
 export default function TransactionsScreen() {
-    const { transactions: data, refresh, deleteTransaction } = useTransactionsViewModel();
+    const {
+        transactions: data,
+        refresh,
+        deleteTransaction,
+        searchQuery,
+        setSearchQuery,
+        loadMore,
+        isLoadingMore,
+        isLoading
+    } = useTransactionsViewModel();
     const [refreshing, setRefreshing] = useState(false);
     const { isDark } = useTheme();
 
@@ -63,6 +72,27 @@ export default function TransactionsScreen() {
                 showsVerticalScrollIndicator={false}
                 refreshing={refreshing}
                 onRefresh={onRefresh}
+                onEndReached={loadMore}
+                onEndReachedThreshold={0.5}
+                ListHeaderComponent={
+                    <View className="mb-6">
+                        <View className="flex-row items-center bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 border border-gray-100 dark:border-gray-700">
+                            <Ionicons name="search" size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
+                            <TextInput
+                                className="flex-1 ml-3 text-gray-900 dark:text-white text-base"
+                                placeholder="Search note or category..."
+                                placeholderTextColor={isDark ? "#4b5563" : "#9ca3af"}
+                                value={searchQuery}
+                                onChangeText={setSearchQuery}
+                            />
+                            {searchQuery.length > 0 && (
+                                <Pressable onPress={() => setSearchQuery('')}>
+                                    <Ionicons name="close-circle" size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
+                                </Pressable>
+                            )}
+                        </View>
+                    </View>
+                }
                 renderItem={({ item, index }) => (
                     <Animated.View entering={FadeInDown.delay(index * 50).springify()} className="mb-3">
                         <TransactionCard
@@ -73,12 +103,23 @@ export default function TransactionsScreen() {
                     </Animated.View>
                 )}
                 ListEmptyComponent={
-                    <View className="items-center py-20">
-                        <View className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full items-center justify-center mb-4">
-                            <Ionicons name="document-text-outline" size={32} color={isDark ? "#4b5563" : "#9ca3af"} />
+                    !isLoading ? (
+                        <View className="items-center py-20">
+                            <View className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-full items-center justify-center mb-4">
+                                <Ionicons name="document-text-outline" size={32} color={isDark ? "#4b5563" : "#9ca3af"} />
+                            </View>
+                            <Text className="text-gray-400 dark:text-gray-500 font-medium">
+                                {searchQuery ? "No matching transactions" : "No transactions found"}
+                            </Text>
                         </View>
-                        <Text className="text-gray-400 dark:text-gray-500 font-medium">No transactions found</Text>
-                    </View>
+                    ) : null
+                }
+                ListFooterComponent={
+                    isLoadingMore ? (
+                        <View className="py-4">
+                            <ActivityIndicator color="#6366f1" />
+                        </View>
+                    ) : null
                 }
             />
         </SafeAreaView>

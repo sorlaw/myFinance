@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, lte, sum } from 'drizzle-orm';
+import { and, desc, eq, gte, like, lte, or, sum } from 'drizzle-orm';
 import { Transaction, TransactionType } from '../../core/entities/Transaction';
 import { TransactionRepository } from '../../core/repositories/TransactionRepository';
 import { db } from '../datasources/local/database';
@@ -14,8 +14,17 @@ const mapToEntity = (dbTx: DbTransaction): Transaction => ({
 });
 
 export class TransactionRepositoryImpl implements TransactionRepository {
-    async getAll(): Promise<Transaction[]> {
-        const result = await db.select().from(transactions).orderBy(desc(transactions.date));
+    async getAll(limit?: number, offset?: number): Promise<Transaction[]> {
+        let query = db.select().from(transactions).orderBy(desc(transactions.date));
+
+        if (limit !== undefined) {
+            query = query.limit(limit) as any;
+        }
+        if (offset !== undefined) {
+            query = query.offset(offset) as any;
+        }
+
+        const result = await query;
         return result.map(mapToEntity);
     }
 
@@ -28,6 +37,28 @@ export class TransactionRepositoryImpl implements TransactionRepository {
         const result = await db.select().from(transactions)
             .where(and(gte(transactions.date, startDate), lte(transactions.date, endDate)))
             .orderBy(desc(transactions.date));
+        return result.map(mapToEntity);
+    }
+
+    async search(queryText: string, limit?: number, offset?: number): Promise<Transaction[]> {
+        const searchTerm = `%${queryText}%`;
+        let query = db.select().from(transactions)
+            .where(
+                or(
+                    like(transactions.note, searchTerm),
+                    like(transactions.category, searchTerm)
+                )
+            )
+            .orderBy(desc(transactions.date));
+
+        if (limit !== undefined) {
+            query = query.limit(limit) as any;
+        }
+        if (offset !== undefined) {
+            query = query.offset(offset) as any;
+        }
+
+        const result = await query;
         return result.map(mapToEntity);
     }
 
@@ -71,5 +102,9 @@ export class TransactionRepositoryImpl implements TransactionRepository {
             .from(transactions)
             .where(eq(transactions.type, 'expense'));
         return Number(result[0]?.value ?? 0);
+    }
+
+    async deleteBeforeDate(date: Date): Promise<void> {
+        await db.delete(transactions).where(lte(transactions.date, date));
     }
 }

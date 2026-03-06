@@ -16,35 +16,61 @@ const updateUseCase = new UpdateTransactionUseCase(repository);
 export function useTransactionsViewModel() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const PAGE_SIZE = 20;
 
-    const fetchTransactions = useCallback(async (startDate?: Date, endDate?: Date) => {
-        setIsLoading(true);
+    const fetchTransactions = useCallback(async (isLoadMore = false, query = searchQuery) => {
+        if (isLoadMore) {
+            setIsLoadingMore(true);
+        } else {
+            setIsLoading(true);
+            setPage(0);
+            setHasMore(true);
+        }
         setError(null);
         try {
-            let data;
-            if (startDate && endDate) {
-                // Assuming we could expose this via repository directly or use case
-                // Ideally create a GetTransactionsInRangeUseCase but for simplicity calling repo via a new usecase or just assume GetTransactions fetches all and we filter?
-                // No, let's stick to valid architecture.
-                // Let's modify GetTransactionsUseCase to accept optional range?
-                // Or just instantiate repository here? No, stick to use cases.
-                // Let's assume GetTransactions gets all for now, and we can refactor `report.tsx` to use a separate logic or simple filter?
-                // Actually better to just add `getBetween` to repo and simple call.
-                // I will simply add `getBetween` to the repo impl and call it from here if params provided?
-                // Cleanest: `GetTransactionsUseCase` accepts filter.
-                data = await getUseCase.execute(startDate, endDate);
+            const currentPage = isLoadMore ? page + 1 : 0;
+            const data = await getUseCase.execute(
+                undefined,
+                undefined,
+                query,
+                PAGE_SIZE,
+                currentPage * PAGE_SIZE
+            );
+
+            if (isLoadMore) {
+                setTransactions(prev => [...prev, ...data]);
+                setPage(currentPage);
             } else {
-                data = await getUseCase.execute();
+                setTransactions(data);
             }
-            setTransactions(data);
+
+            if (data.length < PAGE_SIZE) {
+                setHasMore(false);
+            }
         } catch (e) {
             setError('Failed to fetch transactions');
             console.error(e);
         } finally {
             setIsLoading(false);
+            setIsLoadingMore(false);
         }
-    }, []);
+    }, [page, searchQuery]);
+
+    const handleSearch = useCallback((query: string) => {
+        setSearchQuery(query);
+        fetchTransactions(false, query);
+    }, [fetchTransactions]);
+
+    const loadMore = useCallback(() => {
+        if (!isLoading && !isLoadingMore && hasMore) {
+            fetchTransactions(true);
+        }
+    }, [fetchTransactions, isLoading, isLoadingMore, hasMore]);
 
     const addTransaction = useCallback(async (transaction: Omit<Transaction, 'id'>) => {
         setIsLoading(true);
@@ -88,10 +114,15 @@ export function useTransactionsViewModel() {
     return {
         transactions,
         isLoading,
+        isLoadingMore,
         error,
+        searchQuery,
+        hasMore,
+        setSearchQuery: handleSearch,
         addTransaction,
         deleteTransaction,
         updateTransaction,
-        refresh: fetchTransactions
+        loadMore,
+        refresh: () => fetchTransactions(false)
     };
 }

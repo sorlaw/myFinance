@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const transactions = sqliteTable('transactions', {
     id: integer('id').primaryKey({ autoIncrement: true }),
@@ -7,7 +7,11 @@ export const transactions = sqliteTable('transactions', {
     type: text('type').notNull(), // 'income' | 'expense'
     date: integer('date', { mode: 'timestamp' }).notNull(),
     note: text('note'),
-});
+}, (table) => ({
+    dateIdx: index('date_idx').on(table.date),
+    categoryIdx: index('category_idx').on(table.category),
+    noteIdx: index('note_idx').on(table.note),
+}));
 
 export type Transaction = typeof transactions.$inferSelect;
 export type NewTransaction = typeof transactions.$inferInsert;

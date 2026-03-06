@@ -8,6 +8,18 @@ import { Alert, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View }
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+const CATEGORIES = [
+    { id: 'Food', icon: 'fast-food-outline', color: '#f97316' },
+    { id: 'Transport', icon: 'car-outline', color: '#3b82f6' },
+    { id: 'Shopping', icon: 'bag-handle-outline', color: '#ec4899' },
+    { id: 'Bills', icon: 'flash-outline', color: '#eab308' },
+    { id: 'Home', icon: 'home-outline', color: '#6366f1' },
+    { id: 'Education', icon: 'school-outline', color: '#8b5cf6' },
+    { id: 'Health', icon: 'fitness-outline', color: '#ef4444' },
+    { id: 'Salary', icon: 'cash-outline', color: '#10b981' },
+    { id: 'Other', icon: 'wallet-outline', color: '#6b7280' },
+];
+
 export default function AddTransaction() {
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('');
@@ -178,19 +190,40 @@ export default function AddTransaction() {
 
                     {/* Form Inputs */}
                     <Animated.View entering={FadeInDown.delay(300).duration(600).springify()} className="gap-y-4">
-                        <View className="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl flex-row items-center border border-gray-100 dark:border-gray-700">
-                            <View className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-rose-100 dark:bg-rose-900/30'}`}>
-                                <Ionicons name="grid-outline" size={20} color={type === 'income' ? '#10B981' : '#F43F5E'} />
+                        <View className="bg-gray-50 dark:bg-gray-800 p-4 rounded-3xl border border-gray-100 dark:border-gray-700">
+                            <View className="flex-row items-center mb-4">
+                                <View className={`w-10 h-10 rounded-full items-center justify-center mr-3 ${type === 'income' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-rose-100 dark:bg-rose-900/30'}`}>
+                                    <Ionicons name="grid-outline" size={20} color={type === 'income' ? '#10B981' : '#F43F5E'} />
+                                </View>
+                                <Text className="text-gray-900 dark:text-white font-bold text-base">Select Category</Text>
                             </View>
-                            <View className="flex-1">
-                                <Text className="text-xs text-gray-400 font-medium mb-0.5">Category</Text>
-                                <TextInput
-                                    className="text-gray-900 dark:text-white font-semibold text-base p-0"
-                                    placeholder="Food, Shopping, etc."
-                                    placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
-                                    value={category}
-                                    onChangeText={setCategory}
-                                />
+
+                            <View className="flex-row flex-wrap justify-between gap-y-3">
+                                {CATEGORIES.map((cat) => {
+                                    const isSelected = category === cat.id;
+                                    return (
+                                        <TouchableOpacity
+                                            key={cat.id}
+                                            onPress={() => setCategory(cat.id)}
+                                            activeOpacity={0.7}
+                                            style={{ width: '31%' }}
+                                            className={`items-center p-3 rounded-2xl border ${isSelected ? 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 shadow-sm' : 'border-transparent'}`}
+                                        >
+                                            <View
+                                                style={{ backgroundColor: isSelected ? cat.color : (isDark ? '#374151' : '#F3F4F6') }}
+                                                className="w-12 h-12 rounded-full items-center justify-center mb-2"
+                                            >
+                                                <Ionicons name={cat.icon as any} size={22} color={isSelected ? 'white' : (isDark ? '#9CA3AF' : '#6B7280')} />
+                                            </View>
+                                            <Text
+                                                numberOfLines={1}
+                                                className={`text-[11px] font-bold ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}
+                                            >
+                                                {cat.id}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
                             </View>
                         </View>
 

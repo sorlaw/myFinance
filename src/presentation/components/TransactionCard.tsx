@@ -1,4 +1,4 @@
-import { Transaction } from '@/src/data/datasources/local/schema';
+import { Transaction } from '@/src/core/entities/Transaction';
 import { getCategoryIcon } from '@/utils/categoryIcons';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
